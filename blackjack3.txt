@@ -1,0 +1,99 @@
+// Card Constructor
+function Card(suit, number){
+    var suit1=suit;
+    var number1=number;
+    this.getSuit=function(){
+    return suit1;    
+    };
+
+    this.getNumber=function(){
+    return number1;
+    };
+    this.getValue=function(){
+    if(number1>=10){
+    return 10;
+    }    
+    else if(number1===1){
+    return 11;    
+    }
+    else{return number1;}
+    };
+}
+
+var deal=function(){
+    var suit=Math.floor(Math.random()*4+1);
+    var number=Math.floor(Math.random()*13+1);
+    return new Card(suit, number);
+};
+
+function Hand(){
+    var cards=[];
+    cards[0]=deal();
+    cards[1]=deal();
+    this.getHand=function(){
+    return cards;    
+    };
+    this.score=function(){
+    var total=0;
+    for(var i=0; i<cards.length;i++){
+    total+=cards[i].getValue();
+        }
+    if(total>21){
+    for(var i=0; i<cards.length; i++){
+        if(cards[i].getValue()===11)
+        {total-=10;}
+        if(total<=21){break;}
+    }
+    }    
+    return total;    
+    };
+    this.printHand=function(){
+    for(var i=0; i<cards.length;i++){
+    return (cards[i].getNumber() +"of suit" + cards[i].getSuit());
+    }    
+    };
+    this.hitMe=function(){
+    cards.push(deal());    
+    };
+}
+function playAsDealer(){
+    var dealer=new Hand();
+    while(dealer.score()<17){
+        dealer.hitMe();
+    }
+return dealer;
+
+}
+function playAsUser(){
+    var user=new Hand();
+    do{
+    var keepPlaying=confirm(user.printHand()+".Keep playing?");
+    if(keepPlaying){
+    user.hitMe();}
+    }
+    while(keepPlaying);
+    return user;
+}
+ function declareWinner(userHand, dealerHand){
+     var userscore=userHand.score();
+     var dealerscore=dealerHand.score();
+     if(userscore>21){
+     if(dealerscore>21){return "You tied!";}
+     else{return "You lose!";}
+          }
+    else if (dealerscore>21){
+    return "You win!";
+    }      
+    else{
+    if(userscore>dealerscore){return"You win!";}
+    else if(userscore===dealerscore){return "You tied!";}
+    else{return "You lose!";}
+    }
+ }
+ function playGame(){
+     var user=playAsUser();
+     var dealer=playAsDealer();
+     var result=declareWinner(user, dealer);
+     console.log("Dealer's hand" + dealer.printHand()+".User's hand:"+user.printHand()+"."+result);
+ }
+ playGame();
